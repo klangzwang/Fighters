@@ -11,7 +11,13 @@ public class Fighters : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[]
 			{
-				"Snipl"
+				"Fighters",
+				"Fighters/Animation",
+				"Fighters/Character",
+				"Fighters/Component",
+				"Fighters/Controller",
+				"Fighters/Core",
+				"Fighters/Stage"
             }
 			);
 
@@ -34,7 +40,5 @@ public class Fighters : ModuleRules
 			{
 			}
 			);
-
-
 	}
 }
