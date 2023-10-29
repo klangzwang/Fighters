@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "Fighters.h"
 #include "FGCharacterBase.h"
-#include "FGPlayerController.h"
+#include "FGOpenController.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/GameModeBase.h"
 #include "FGGameMode.generated.h"
@@ -37,9 +37,9 @@ public:
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|Controller|Player")
-	AFGPlayerController* pController;
+	AFGOpenController* pController;
 	UFUNCTION(BlueprintCallable, Category = "Fighters|Controller")
-	FORCEINLINE class AFGPlayerController* GetPawnController() const { return pController; }
+	FORCEINLINE class AFGOpenController* GetPawnController() const { return pController; }
 
 public:
 
@@ -56,12 +56,12 @@ public:
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<AFGPlayerController> ControllerClassRight;
+	TSubclassOf<AFGOpenController> ControllerClassRight;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGPlayerController* ControllerLeft;
+	AFGOpenController* ControllerLeft;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGPlayerController* ControllerRight;
+	AFGOpenController* ControllerRight;
 
 public:
 
@@ -71,14 +71,14 @@ public:
 	FORCEINLINE AFGCharacterBase* GetRightCharacter() { return CharacterRight; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGPlayerController* GetLeftPlayerController() { return ControllerLeft; }
+	FORCEINLINE AFGOpenController* GetLeftPlayerController() { return ControllerLeft; }
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGPlayerController* GetRightPlayerController() { return ControllerRight; }
+	FORCEINLINE AFGOpenController* GetRightPlayerController() { return ControllerRight; }
 
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<AFGPlayerController*> Controllers;
+	TArray<AFGOpenController*> Controllers;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<AFGCharacterBase*> Characters;
 };

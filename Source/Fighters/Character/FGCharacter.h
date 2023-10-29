@@ -7,7 +7,6 @@
 #include "Components/Image.h"
 #include "Sound/SoundBase.h"
 #include "FGAnimMontage.h"
-#include "ECharacterID.h"
 #include "FGCharacter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -102,8 +101,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Fighters|Character")
 	FVector GetCharacterSize(TSubclassOf<AFGCharacter> inClass);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|Character")
-	ECharacterID characterID;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|Character")
 	FCharacterClass characterClass;
 };
