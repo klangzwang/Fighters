@@ -9,7 +9,7 @@ class FIGHTERS_API AFGOpenController : public APlayerController
 
 public:
 
-    AFGOpenController();
+	AFGOpenController();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

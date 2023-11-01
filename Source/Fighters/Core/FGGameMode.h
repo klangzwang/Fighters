@@ -3,6 +3,7 @@
 #include "Fighters.h"
 #include "FGCharacterBase.h"
 #include "FGOpenController.h"
+#include "FGLevelScriptActorBattle.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/GameModeBase.h"
 #include "FGGameMode.generated.h"

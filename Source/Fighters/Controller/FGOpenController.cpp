@@ -1,5 +1,6 @@
 #include "FGOpenController.h"
 #include "GameFramework/InputSettings.h"
+#include "FGGameMode.h"
 
 AFGOpenController::AFGOpenController()
 {
