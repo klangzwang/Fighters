@@ -1,22 +1,25 @@
 #include "FGGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include <DACharLights.h>
+#include "FGMainViewportWidgetSpawner.h"
 
 UFGGameInstance::UFGGameInstance()
 {
+	DebugMenuWindow = CreateDefaultSubobject<UFGDebugComponent>("DebugMenuWindow");
+
 	CharacterIdLeft = ECharacterID::NONE;
 	CharacterIdRight = ECharacterID::NONE;
 	StageId = EStageID::NON;
 	MatchState = EMatchState::VE_NoMatch;
 	BattleTime = EBattleTime::VE_Time60;
 	WinCount = EWinCount::VE_Count2;
+	PlayerIdLeft = EPlayerID::NONE;
+	PlayerIdRight = EPlayerID::NONE;
+
 	WinCountLeft = 0;
 	WinCountRight = 0;
-}
 
-UDataTable* UFGGameInstance::GetCameraParam() const
-{
-	return Cast<UDataTable>(CameraParam);
+	m_MainViewportWidget = nullptr;
+	InputManager = nullptr;
 }
 
 void UFGGameInstance::SetCharacterIds(ECharacterID characterIdLeft, ECharacterID characterIdRight)
@@ -31,6 +34,23 @@ void UFGGameInstance::SetStageId(EStageID stageId)
 {
 	if (stageId != StageId)
 		StageId = stageId;
+}
+
+void UFGGameInstance::SetPlayerIds(EPlayerID playerIdLeft, EPlayerID playerIdRight)
+{
+	if (playerIdLeft != PlayerIdLeft)
+		PlayerIdLeft = playerIdLeft;
+	if (playerIdRight != PlayerIdRight)
+		PlayerIdRight = playerIdRight;
+}
+
+bool UFGGameInstance::hasSpawned()
+{
+	TArray<AFGCharacterBase*> Characters;
+	FindAllActors(GetWorld(), Characters);
+	TArray<AController*> Controllers;
+	FindAllActors(GetWorld(), Controllers);
+	return Characters.Num() == 2 && Controllers.Num() == 2;
 }
 
 void UFGGameInstance::SetMatchState(EMatchState matchState)
@@ -57,4 +77,14 @@ void UFGGameInstance::SetWinCounts(int32 winCountLeft, int32 winCountRight)
 		WinCountLeft = winCountLeft;
 	if (winCountRight != WinCountRight)
 		WinCountRight = winCountRight;
+}
+
+UFGMainViewportWidget* UFGGameInstance::GetMainViewportWidget()
+{
+	return m_MainViewportWidget;
+}
+
+void UFGGameInstance::SetMainViewportWidget(UFGMainViewportWidget* MainViewportWidget)
+{
+	m_MainViewportWidget = CreateWidget<UFGMainViewportWidget>(MainViewportWidget, UFGMainViewportWidget::StaticClass());
 }

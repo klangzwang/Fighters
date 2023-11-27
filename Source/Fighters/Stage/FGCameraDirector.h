@@ -1,14 +1,19 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Fighters.h"
 #include "GameFramework/Actor.h"
-#include "FGBattleCamera.h"
+#include "DACameraParam.h"
 #include "Camera/CameraActor.h"
+#include "FGCharacterBase.h"
+#include "GameFramework/PlayerStart.h"
 #include "FGCameraDirector.generated.h"
 
 UENUM(BlueprintType)
 enum class ECameraMode : uint8
 {
     VE_NoMode			UMETA(DisplayName = "NoMode"),
+    VE_Demo 			UMETA(DisplayName = "Demo"),
+    VE_Idle 			UMETA(DisplayName = "Idle"),
     VE_Battle	        UMETA(DisplayName = "Battle"),
     VE_Stage            UMETA(DisplayName = "Stage"),
     VE_Character		UMETA(DisplayName = "Character"),
@@ -30,20 +35,36 @@ public:
     AFGCameraDirector();
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    ACameraActor* CameraMain;
+    AActor* CameraMain;
     
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-    ACameraActor* CameraCinema;
+    AActor* CameraCinema;
 
     UFUNCTION(BlueprintCallable, BlueprintPure)
-    ACameraActor* GetMainCamera();
+    AActor* GetMainCamera();
+
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    AActor* GetCinemaCamera();
 
 public:
 
-    void UpdateCameraEdgeMoving();
-    void UpdateCameraMoving();
+    UFUNCTION(BlueprintCallable)
+    void SetupCameraMode();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    TArray<FVector> LocationArray;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    float CurrentExtraDistance;
+
+    void UpdateBattleCameraMoving();
     bool canMoving(float cameraMove);
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+    bool DebugCameraEdge;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+    bool DebugCameraInfos;
 
 public:
 
@@ -51,9 +72,17 @@ public:
     TSubclassOf<AActor> CameraEdgeClass;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-    AActor* CameraEdgeLeft;
+    AActor* EdgeOuterLeft;
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-    AActor* CameraEdgeRight;
+    AActor* EdgeOuterRight;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
+    AActor* EdgeInnerLeft;
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
+    AActor* EdgeInnerRight;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+    bool hasEdgesSpawned;
 
 public:
 
@@ -99,8 +128,64 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
     bool cameraIsReady;
 
+private:
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+    UDACameraParam* mCameraParam;
+
+public:
+
+    float GetCameraMinHeight();
+    float GetCameraMaxHeight();
+    float GetCameraMinDistance();
+    float GetCameraMaxDistance();
+
+public:
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+    bool canCameraMove;
+
 public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera|Mode")
     ECameraMode cameraMode;
+
+public:
+
+    UFUNCTION()
+    void CalcStageDemo();
+
+    UFUNCTION()
+    void CalcCharacterDemo();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool playStageDemo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool playCharacterDemo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool isStageDemoDone;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool isCharacterDemoDone;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool isStageDemoPlaying;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Camera")
+    bool isCharacterDemoPlaying;
+
+public:
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Fighters|Camera)")
+    void PerformStageDemo();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Fighters|Camera)")
+    void PerformCharacterDemo();
+
+public:
+
+    UFUNCTION(BlueprintCallable, Category = "Fighters|Camera)")
+    void SetOriginalLocation();
 };

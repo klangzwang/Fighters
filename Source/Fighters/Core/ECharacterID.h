@@ -7,5 +7,6 @@ enum class ECharacterID : uint8
 {
     NONE,
     DUM,
-    GEN
+    GEN,
+    MOK
 };

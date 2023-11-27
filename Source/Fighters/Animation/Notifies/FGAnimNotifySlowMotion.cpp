@@ -21,9 +21,9 @@ void UFGAnimNotifySlowMotion::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	MeshComp->AnimScriptInstance->Montage_SetPlayRate(MeshComp->AnimScriptInstance->GetCurrentActiveMontage(), customPlayRate);
 }
 
-void UFGAnimNotifySlowMotion::PerformNotifyTick(AFGCharacterBase* Character, AFGOpenController* Controller, USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void UFGAnimNotifySlowMotion::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
-	Super::PerformNotifyTick(Character, Controller, MeshComp, Animation);
+	Received_NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
 	float mPlayRate = MeshComp->AnimScriptInstance->Montage_GetPlayRate(MeshComp->AnimScriptInstance->GetCurrentActiveMontage());
 

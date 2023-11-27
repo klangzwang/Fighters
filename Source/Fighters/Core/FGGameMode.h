@@ -1,15 +1,24 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Fighters.h"
+#include "FGGameModeBase.h"
+#include "EMatchState.h"
 #include "FGCharacterBase.h"
-#include "FGOpenController.h"
-#include "FGLevelScriptActorBattle.h"
-#include "GameFramework/PlayerStart.h"
-#include "GameFramework/GameModeBase.h"
+#include "FGCharacter.h"
+#include "FGAIController.h"
+#include "HeightFogData.h"
+#include "SkyLightData.h"
+#include "BGLightData.h"
+#include "WorldLight.h"
+#include "WorldLight.h"
+#include "CharacterLights.h"
+
 #include "FGGameMode.generated.h"
 
+class ACharacter;
+
 UCLASS(minimalapi)
-class AFGGameMode : public AGameModeBase
+class AFGGameMode : public AFGGameModeBase
 {
 	GENERATED_BODY()
 
@@ -17,69 +26,129 @@ public:
 
 	AFGGameMode();
 
+protected:
+
 	virtual void BeginPlay() override;
+
+public:
+
 	virtual void Tick(float deltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|GameMode")
-	TArray<APlayerStart*> PlayerStarts;
+	UFUNCTION()
+	void CalcMatchState();
+	UFUNCTION()
+	void BeginSpawn();
+	UFUNCTION()
+	void EndSpawn();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|GameMode")
-	TArray<FVector> PlayerStartLocs;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|GameMode")
-	TArray<FRotator> PlayerStartRots;
+	class UFGGameInstance* GameInstance;
 
-public:
+	UFUNCTION(BlueprintCallable)
+	void AddFighterCharacters();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|Controller|Pawn")
-	AFGCharacterBase* pPawn;
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
-	FORCEINLINE class AFGCharacterBase* GetPawnCharacter() const { return pPawn; }
+	UFUNCTION(BlueprintCallable)
+	void AddFighterControllers();
 
-public:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|Controller|Player")
-	AFGOpenController* pController;
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Controller")
-	FORCEINLINE class AFGOpenController* GetPawnController() const { return pController; }
+	bool HasSpawnCondition();
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<AFGCharacterBase> CharacterClassLeft;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<AFGCharacterBase> CharacterClassRight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|GameMode")
+	float BattleTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|GameMode")
+	float WinCounter;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGCharacterBase* CharacterLeft;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGCharacterBase* CharacterRight;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameMode", meta = (AllowPrivateAccess = true))
+	int32 WinCountLeft;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameMode", meta = (AllowPrivateAccess = true))
+	int32 WinCountRight;
 
-public:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<AFGOpenController> ControllerClassRight;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGOpenController* ControllerLeft;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, meta = (AllowPrivateAccess = true))
-	AFGOpenController* ControllerRight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|GameMode")
+	EMatchState MatchState;
 
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGCharacterBase* GetLeftCharacter() { return CharacterLeft; }
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGCharacterBase* GetRightCharacter() { return CharacterRight; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGOpenController* GetLeftPlayerController() { return ControllerLeft; }
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Fighters|GameMode", meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))
-	FORCEINLINE AFGOpenController* GetRightPlayerController() { return ControllerRight; }
-
-public:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<AFGOpenController*> Controllers;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Location")
+	TArray<APlayerStart*> PlayerStart;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Controller")
+	TArray<AController*> Controllers;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Character")
 	TArray<AFGCharacterBase*> Characters;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Character")
+	TSubclassOf<AFGCharacterBase> CharacterLeft;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Character")
+	TSubclassOf<AFGCharacterBase> CharacterRight;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Controller")
+	TSubclassOf<AFGAIController> ControllerAiLeft;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Controller")
+	TSubclassOf<AFGAIController> ControllerAiRight;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|GameState|Ai")
+	UBehaviorTree* aiBehavior;
+
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FHeightFogData> HeightFogData;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FSkyLightData> SkyLightData;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FBGLightData> BGWorldLightData;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FCharacterLights CharacterLights;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FWorldLight> MainWorldLights;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FWorldLight> RightSideWorldLights;
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateWorldLights();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateFog();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateCharacterLights();
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void RestartBattleScene();
+
+	UFUNCTION(BlueprintCallable)
+	void RestartBattleRound();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetWorldLights();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetCharacterLights();
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	ACharacter* GetPlayerCharacter(EPlayerID PlayerID);
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetPlayerActorLocation(EPlayerID PlayerID);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetPlayerActorHealth(EPlayerID PlayerID);
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void ClearWorldLights();
+
+	UFUNCTION(BlueprintCallable)
+	void ClearCharacterLights();
 };

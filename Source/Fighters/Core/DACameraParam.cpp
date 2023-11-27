@@ -2,10 +2,10 @@
 
 UDACameraParam::UDACameraParam()
 {
-    this->CameraMinHeight = 120.50f;
-    this->CameraMaxHeight = 130.85f;
-    this->CameraMinDistance = 520.50f;
-    this->CameraMaxDistance = 590.50f;
+    this->CameraMinHeight = 120.f;
+    this->CameraMaxHeight = 130.f;
+    this->CameraMinDistance = 430.f;
+    this->CameraMaxDistance = 430.f;
     this->CameraScreenEndRange = 210.50f;
     this->CameraHeightDistance = 200.00f;
     this->CameraVerticalMoveAdjust = 70.00f;

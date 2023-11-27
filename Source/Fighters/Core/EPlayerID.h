@@ -5,7 +5,7 @@
 UENUM(BlueprintType)
 enum class EPlayerID : uint8
 {
-    PlayerLeft,
-    PlayerRight,
-    None,
+    NONE,
+    PLAYER,
+    CPU
 };

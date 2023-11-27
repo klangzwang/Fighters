@@ -61,7 +61,7 @@ public:
 	FAnimMontageFighting fighting;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
-	FVector characterSize;
+	FVector characterSize = FVector(1.f, 1.f, 1.f);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
 	UTexture2D* portraitLeft;

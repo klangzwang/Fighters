@@ -5,8 +5,6 @@
 AFGCharacter::AFGCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	characterClass.characterSize = FVector(1.f, 1.f, 1.f);
 }
 
 FCharacterClass AFGCharacter::GetCharacterClass(TSubclassOf<AFGCharacter> inClass)

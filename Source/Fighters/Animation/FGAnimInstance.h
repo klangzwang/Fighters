@@ -2,7 +2,6 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "FGGameMode.h"
 #include "FGAnimInstance.generated.h"
 
 UCLASS()

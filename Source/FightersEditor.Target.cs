@@ -8,6 +8,8 @@ public class FightersEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
-		ExtraModuleNames.Add("Fighters");
+		ExtraModuleNames.AddRange(new string[] {
+			"Fighters"
+		});
 	}
 }

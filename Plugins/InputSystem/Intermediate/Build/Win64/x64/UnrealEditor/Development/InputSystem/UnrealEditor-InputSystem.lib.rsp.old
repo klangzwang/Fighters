@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-InputSystem.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"B:\Fighters\Intermediate\Build\Win64\x64\FightersEditor\Development\Engine\SharedPCH.Engine.Cpp20.h.obj"
+"B:\Fighters\Plugins\InputSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\InputSystem\Module.InputSystem.cpp.obj"
+"B:\Fighters\Plugins\InputSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\InputSystem\Default.rc2.res"
+/OUT:"B:\Fighters\Plugins\InputSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\InputSystem\UnrealEditor-InputSystem.lib"

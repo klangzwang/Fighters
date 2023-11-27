@@ -7,7 +7,9 @@ public class Fighters : ModuleRules
 	public Fighters(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
+	    bLegacyPublicIncludePaths = false;
+        ShadowVariableWarningLevel = WarningLevel.Warning;
+
 		PublicIncludePaths.AddRange(
 			new string[]
 			{
@@ -16,8 +18,10 @@ public class Fighters : ModuleRules
 				"Fighters/Character",
 				"Fighters/Component",
 				"Fighters/Controller",
+				"Fighters/State",
 				"Fighters/Core",
-				"Fighters/Stage"
+				"Fighters/Stage",
+				"Fighters/UI"
             }
 			);
 
@@ -29,8 +33,13 @@ public class Fighters : ModuleRules
 				"Engine",
 				"InputCore",
 				"EnhancedInput",
+				"InputSystem",
+				"MovieScene",
+				"LevelSequence",
+				"PropertyPath",
 				"Slate",
 				"SlateCore",
+				"AIModule",
 				"UMG"
 			}
 			);
@@ -38,6 +47,11 @@ public class Fighters : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
+				"Json",
+				"CommonUI",
+				"CommonInput",
+				"GameplayTags",
+				"CinematicCamera"
 			}
 			);
 	}

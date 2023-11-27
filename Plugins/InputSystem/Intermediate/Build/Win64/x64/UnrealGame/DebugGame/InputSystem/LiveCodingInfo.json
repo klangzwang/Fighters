@@ -1,0 +1,15 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.InputSystem.cpp.obj": [
+			"EActionKey.gen.cpp.obj",
+			"EActionType.gen.cpp.obj",
+			"InputManager.gen.cpp.obj",
+			"InputSystem.init.gen.cpp.obj",
+			"KeyMap.gen.cpp.obj",
+			"InputManager.cpp.obj",
+			"InputSystem.cpp.obj",
+			"KeyMap.cpp.obj"
+		]
+	}
+}

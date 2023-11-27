@@ -1,0 +1,23 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.InputSystem.cpp.obj": [
+			"EActionKey.gen.cpp.obj",
+			"EActionType.gen.cpp.obj",
+			"EDeviceType.gen.cpp.obj",
+			"EFightingConfigKey.gen.cpp.obj",
+			"EKeyOperation.gen.cpp.obj",
+			"EUiOperation.gen.cpp.obj",
+			"InputActionKeyBinding.gen.cpp.obj",
+			"InputBaseUserWidget.gen.cpp.obj",
+			"InputBlueprintLibrary.gen.cpp.obj",
+			"InputManager.gen.cpp.obj",
+			"InputSystem.init.gen.cpp.obj",
+			"KeyMap.gen.cpp.obj",
+			"InputBaseUserWidget.cpp.obj",
+			"InputBlueprintLibrary.cpp.obj",
+			"InputManager.cpp.obj",
+			"InputSystem.cpp.obj"
+		]
+	}
+}

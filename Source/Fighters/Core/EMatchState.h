@@ -8,6 +8,7 @@ UENUM(BlueprintType)
 enum class EMatchState : uint8
 {
 	VE_NoMatch			UMETA(DisplayName = "NoMatch"),
+	VE_MatchInit		UMETA(DisplayName = "MatchInit"),
 	VE_MatchEnter		UMETA(DisplayName = "MatchEnter"),
 	VE_MatchIntro		UMETA(DisplayName = "MatchIntro"),
 	VE_MatchReady		UMETA(DisplayName = "MatchReady"),

@@ -1,16 +1,18 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ECharacterID.h"
 #include "FGCharacter.h"
+#include "FGActionComponent.h"
 #include "ECharacterStates.h"
+#include "EMoveStates.h"
 #include "EAttackLayer.h"
 #include "FGAnimMontage.h"
-#include "InputActionValue.h"
+#include "FGAnimInstance.h"
+#include "EPlayerID.h"
 #include "FGCharacterBase.generated.h"
 
-class UInputMappingContext;
 class UDACharLights;
-struct FInputActionValue;
 
 UCLASS(config = Game)
 class FIGHTERS_API AFGCharacterBase : public ACharacter
@@ -19,75 +21,90 @@ class FIGHTERS_API AFGCharacterBase : public ACharacter
 
 public:
 
-	AFGCharacterBase();
+	AFGCharacterBase(const FObjectInitializer& ObjectInitializer);
 
 protected:
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
+
+public:
+
 	virtual void Tick(float DeltaTime) override;
-	virtual void Landed(const FHitResult& Hit) override;
 
 	virtual float PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None) override;
 	virtual void StopAnimMontage(class UAnimMontage* AnimMontage) override;
-	void StopAllAnimMontages();
+	void StopAllAnimMontages(float blendout);
 
-protected:
-
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	virtual void Landed(const FHitResult& Hit) override;
 
 public:
 
+	void MoveRight(const struct FInputActionValue& Value);
+	void Jumping(const struct FInputActionValue& Value);
+	void Crouching();
+	void Roll();
+	void Dash();
+
+	void LP(bool Value);
+	void RP(bool Value);
+	void LK(bool Value);
+	void RK(bool Value);
+
+	void MoveRightEnd();
+	void CrouchingEnd();
+
+	void PKEnd();
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighters|Character|Basics")
+	class UFGActionComponent* AC;
+
+	FORCEINLINE class UFGActionComponent* GetActionComponent() const { return AC; }
+
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Fighters|Character|Basics")
+	void CalcDirection();
+
+	UFUNCTION(BlueprintCallable, Category = "Fighters|Character|Basics")
+	bool CalcIgnoreCollision(float lowest, float highest);
+
+	UFUNCTION(BlueprintCallable, Category = "Fighters|Character|Basics")
+	void CalcFlipping(bool facingRight);
+
+	UFUNCTION(BlueprintCallable, Category = "Fighters|Character|Basics")
+	void CalcMoveValue(const struct FInputActionValue& Value);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plIsRunning;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plJumping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plCrouching;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plCanCrouch;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plBlocking;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plAttacking;
+	FVector moveValue;
+
+public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	bool plCanMove;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
+	bool plCanAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	bool plFacingRight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
+	bool plBlocking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	bool plUsingLP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plUsingLK;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	bool plUsingRP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
+	bool plUsingLK;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	bool plUsingRK;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plUsingLPRP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plUsingLKRK;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plUsingLPLK;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plUsingRPRK;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plCanAttack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plNumberOne;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plHasWon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plIsGrabbed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	bool plIsOnGround;
 
 public:
 
-	void FlippingCharacter(bool isFacingRight);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	AFGCharacterBase* otherPlayer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
-	float gravityScaleModifier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|States")
+	ECharacterStates characterState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|States")
+	EMoveStates moveState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	USceneComponent* characterMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
@@ -100,60 +117,22 @@ public:
 	FVector characterSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	TArray<USoundBase*> fighterSounds;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|States")
-	ECharacterStates characterState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
+	TMap<ECharacterID, TSubclassOf<AFGCharacter>> mIdCharacterMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	FCharacterClass characterClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
+	EPlayerID mPlayerID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Basics")
 	FAnimMontageHitDamage hitdamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Hitbox|Debug")
+	bool DebugHitBoxes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Hitbox")
 	TArray<USceneComponent*> hurtboxArray;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|DataAssets")
 	UDACharLights* mCharLights;
 
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Device")
-	bool isReadyToUse;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Input")
-	float moveAxisValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Input")
-	float jumpAxisValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Input")
-	float crouchAxisValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Input")
-	float rollDistance;
-
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
-	FORCEINLINE float GetFGMoveAxisValue() const { return moveAxisValue; }
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
-	FORCEINLINE float GetFGJumpAxisValue() const { return jumpAxisValue; }
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
-	FORCEINLINE float GetFGCrouchAxisValue() const { return crouchAxisValue; }
-
-	void LaunchCharacterCustom(FVector LaunchVelocity, bool bXYOverride, bool bZOverride, bool playerCollision, bool needsTimeline);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Fighters|Character")
-	void LaunchCharacterTimeline(bool isFacingRight);
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Fighters|Character")
-	void IgnorePlayerToPlayerCollision(bool ignorePlayerCollision);
-
-	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
-	void OnGround(float movingAxis, float jumpAxis, float crouchAxis);
-
-	FTimerHandle jumpDelayTimer;
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Debug")
-	bool DebugHitBoxes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Character|Debug")
-	bool DebugAxisValue;
-
-	UFUNCTION()
-	virtual void OnBoxStrikeBegin(class UPrimitiveComponent* Comp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	virtual void OnBoxStrikeEnd(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
 	void SetAttackLayer(EAttackLayer attLayer);
@@ -187,53 +166,29 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Fighters|Character")
 	void HitShaking();
 
-protected:
+public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputMapping", meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* inputMappingLP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputMapping", meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* inputMappingRP;
+	UFUNCTION(BlueprintImplementableEvent, Category = "Fighters|Character")
+	void IgnorePlayerCollision(bool ignore);
+
+	UFUNCTION(BlueprintCallable, Category = "Fighters|Character")
+	void OnGround(float movingAxis, float jumpAxis, float crouchAxis);
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpingAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* CrouchingAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* AttackAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ThrowAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* RollAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighters|Character|InputAction", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* DashAction;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Fighters|Character|Animation")
+	UFGAnimInstance* AnimInstance;
 
 public:
 
-	void Move(const FInputActionValue& Value);
-	void Jumping(const FInputActionValue& Value);
-	void Crouching(const FInputActionValue& Value);
-	void Attack(const FInputActionValue& Value);
-	void Throw(const FInputActionValue& Value);
-	void Roll(const FInputActionValue& Value);
-	void Dash(const FInputActionValue& Value);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fighters|Character|EnhancedInput")
+	class UInputAction* IA_MoveRight;
 
 public:
 
-	void MoveEnd(const FInputActionValue& Value);
-	void JumpingEnd(const FInputActionValue& Value);
-	void CrouchingEnd(const FInputActionValue& Value);
-	void AttackEnd(const FInputActionValue& Value);
-	void ThrowEnd(const FInputActionValue& Value);
-	void RollEnd(const FInputActionValue& Value);
-	void DashEnd(const FInputActionValue& Value);
+	bool HasMoveCondition();
+	bool HasJumpCondition();
+	bool HasCrouchCondition();
+	bool HasDashCondition();
+	bool HasRollCondition();
 };

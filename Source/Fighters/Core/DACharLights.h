@@ -2,7 +2,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "UObject/NoExportTypes.h"
-#include "UObject/NoExportTypes.h"
 #include "Engine/EngineTypes.h"
 #include "DACharLights.generated.h"
 

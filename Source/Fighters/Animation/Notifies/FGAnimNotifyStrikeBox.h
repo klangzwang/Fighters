@@ -1,14 +1,15 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "FGCharacterBase.h"
 #include "UObject/ObjectMacros.h"
-#include "FGAnimNotifyState.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "FGAnimNotifyStrikeBox.generated.h"
 
 class UParticleSystem;
 class USkeletalMeshComponent;
 
 UCLASS(Blueprintable)
-class FIGHTERS_API UFGAnimNotifyStrikeBox : public UFGAnimNotifyState
+class FIGHTERS_API UFGAnimNotifyStrikeBox : public UAnimNotifyState
 {
 	GENERATED_BODY()
 

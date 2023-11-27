@@ -1,10 +1,31 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "FGAnimNotifyState.h"
+#include "FGCharacterBase.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "FGAnimNotifyModifyBox.generated.h"
 
+USTRUCT(BlueprintType)
+struct FBoxModifier
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	int ComponentNumber = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	FVector MoveBox = FVector(0, 0, 0);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	FVector ScaleBox = FVector(1, 1, 1);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	bool HideBox = false;
+};
+
 UCLASS()
-class FIGHTERS_API UFGAnimNotifyModifyBox : public UFGAnimNotifyState
+class FIGHTERS_API UFGAnimNotifyModifyBox : public UAnimNotifyState
 {
 	GENERATED_BODY()
 
@@ -20,47 +41,5 @@ public:
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	bool hideHeadBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	FVector offsetHeadBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float widthHeadBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float heightHeadBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	bool hideTorsoBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	FVector offsetTorsoBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float widthTorsoBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float heightTorsoBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	bool hideLegsBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	FVector offsetLegsBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float widthLegsBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float heightLegsBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	bool hideCollisionBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	FVector offsetCollisionBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float widthCollisionBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float heightCollisionBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	bool hideThrowBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	FVector offsetThrowBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float widthThrowBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighters|Actor|Hitbox")
-	float heightThrowBox;
+	TArray<FBoxModifier> BoxModifiers;
 };
